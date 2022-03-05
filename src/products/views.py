@@ -6,8 +6,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 from .tasks import uploadData
+from .serializers import ProductSerializer
+from .models import Product
 
 
 
@@ -34,3 +37,13 @@ class ProductsFromCSView(APIView):
         a = uploadData.delay(temp_file_path)
         
         return Response(data="File uploading...", status=status.HTTP_202_ACCEPTED)
+
+
+class ListCreateProducts(ListCreateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class RetrieveUpdateDestroyProducts(RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer

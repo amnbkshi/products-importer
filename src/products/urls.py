@@ -1,7 +1,9 @@
 from django.urls import path
 
-from .views import ProductsFromCSView
+from .views import ProductsFromCSView, ListCreateProducts, RetrieveUpdateDestroyProducts
 
 urlpatterns = [
-    path('products/upload_csv/', ProductsFromCSView.as_view()),
+    path('upload_csv/', ProductsFromCSView.as_view()),
+    path('products/', ListCreateProducts.as_view()),
+    path('products/<int:pk>', RetrieveUpdateDestroyProducts.as_view()),
 ]
