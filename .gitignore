@@ -1,0 +1,7 @@
+# python files
+*.py[co]
+__pycache__
+
+# environments
+.venv 
+venv/ 
