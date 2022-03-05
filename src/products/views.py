@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 
-from .tasks import UploadFromCSVTask
+from .tasks import uploadData
 
 
 
@@ -24,13 +24,13 @@ class ProductsFromCSView(APIView):
         csv_file = request.FILES['file']
         self.validate(csv_file)
 
-        temp_file_path = os.path.join(settings.BASE_DIR + "tempstore" + csv_file.name)
+        temp_file_path = os.path.join(settings.BASE_DIR, "tempstore", csv_file.name)
 
         with open(temp_file_path, 'wb+') as fout:
             file_content = ContentFile(csv_file.read())
             for chunk in file_content.chunks():
                 fout.write(chunk)
 
-        UploadFromCSVTask(temp_file_path)
-
-        return Response(data="File uploading", status=status.HTTP_202_ACCEPTED)
+        a = uploadData.delay(temp_file_path)
+        
+        return Response(data="File uploading...", status=status.HTTP_202_ACCEPTED)
