@@ -1,6 +1,7 @@
 import os
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.db import transaction
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -54,6 +55,7 @@ class RetrieveUpdateDestroyProducts(RetrieveUpdateDestroyAPIView):
 
 class DeleteAllProducts(APIView):
 
+    @transaction.atomic
     def delete(self, request):
         Product.objects.all().delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
