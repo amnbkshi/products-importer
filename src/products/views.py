@@ -1,6 +1,9 @@
+import imp
 import os
+import json
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.db import transaction
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -28,15 +31,21 @@ class ProductsFromCSView(APIView):
         self.validate(csv_file)
 
         temp_file_path = os.path.join(settings.BASE_DIR, "tempstore", csv_file.name)
-
+        total_lines = 0
         with open(temp_file_path, 'wb+') as fout:
             file_content = ContentFile(csv_file.read())
+            
             for chunk in file_content.chunks():
+                total_lines += chunk.count(b'\n')
                 fout.write(chunk)
 
         a = uploadData.delay(temp_file_path)
+
+        curl_command = \
+         "curl -XPOST --no-buffer http://127.0.0.1:8000/status/ --data-raw '{{\"task_id\": \"{0}\" }}'"\
+         .format(str(a.id))
         
-        return Response(data="File uploading...", status=status.HTTP_202_ACCEPTED)
+        return Response(data=curl_command, status=status.HTTP_202_ACCEPTED)
 
 
 class ListCreateProducts(ListCreateAPIView):
@@ -47,3 +56,13 @@ class ListCreateProducts(ListCreateAPIView):
 class RetrieveUpdateDestroyProducts(RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+
+class DeleteAllProducts(APIView):
+
+    def delete(self, request):
+
+        Product.objects.all().delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
