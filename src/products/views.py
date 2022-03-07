@@ -17,6 +17,11 @@ from .models import Product, Webhooks
 
 
 class ProductsFromCSView(APIView):
+    """
+    API to upload data to DB using CSV file 
+    Methods Allowed: POST
+    Endpoint: upload_csv/
+    """
 
     @staticmethod
     def validate(csv_file):
@@ -42,6 +47,11 @@ class ProductsFromCSView(APIView):
 
 
 class ListCreateProducts(ListCreateAPIView):
+    """
+    API to list all products or create new
+    Methods Allowed: GET, POST 
+    Endpoint: products/
+    """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend]
@@ -49,12 +59,21 @@ class ListCreateProducts(ListCreateAPIView):
 
 
 class RetrieveUpdateDestroyProducts(RetrieveUpdateDestroyAPIView):
+    """
+    API to retrieve, update or delete a single product using primary key
+    Methods Allowed: GET, PATCH, DELETE 
+    Endpoint: products/<primary_key>
+    """
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 
 class DeleteAllProducts(APIView):
-
+    """
+    API to delete all products
+    Methods Allowed: DELETE
+    Endpoint: delete_all/
+    """
     @transaction.atomic
     def delete(self, request):
         Product.objects.all().delete()
@@ -62,5 +81,10 @@ class DeleteAllProducts(APIView):
 
 
 class ListCreateWebhooks(ListCreateAPIView):
+    """
+    API to list all webhooks or create new
+    Methods Allowed: GET, POST 
+    Endpoint: webhooks/
+    """
     queryset = Webhooks.objects.all()
     serializer_class = WebhooksSerializer
