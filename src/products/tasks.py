@@ -32,6 +32,10 @@ def uploadData(file_path):
 
 @shared_task
 def callWebhooks(payload):
+    """
+    Calls all the active webhooks in the system whenever
+    Product model is saved using django' post_save' signal
+    """
     print(payload)
     clients = Webhooks.objects.filter(is_active=True)
     for client in clients:
