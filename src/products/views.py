@@ -29,12 +29,10 @@ class ProductsFromCSView(APIView):
         self.validate(csv_file)
 
         temp_file_path = os.path.join(settings.BASE_DIR, "tempstore", csv_file.name)
-        total_lines = 0
         with open(temp_file_path, 'wb+') as fout:
             file_content = ContentFile(csv_file.read())
             
             for chunk in file_content.chunks():
-                total_lines += chunk.count(b'\n')
                 fout.write(chunk)
 
         a = uploadData.delay(temp_file_path)
