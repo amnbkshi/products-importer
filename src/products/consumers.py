@@ -5,6 +5,16 @@ import asyncio
 
 
 class ServerSentEventsConsumer(AsyncHttpConsumer):
+    """
+    Django channels consumer to send SSE once client establishes
+    connection.
+    Methods:
+    http_request -> entrypoint which establishes connection and terminates
+                    once all data is sent
+    handle -> handles the logic to receive progress updates from upload task 
+              running in celery
+    send_body -> sends updates to clients
+    """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
