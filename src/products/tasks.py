@@ -1,8 +1,9 @@
 import os
 import csv
+import requests
 from itertools import islice
 from celery import shared_task, current_task
-from .models import Product
+from .models import Product, Webhooks
 
 
 @shared_task
@@ -32,3 +33,8 @@ def uploadData(file_path):
 @shared_task
 def callWebhooks(payload):
     print(payload)
+    clients = Webhooks.objects.filter(is_active=True)
+    for client in clients:
+        url = client.callback_url
+        headers = {"Authorization": "Bearer {0}".format(client.token)}
+        res = requests.post(url=url, data=payload, headers=headers)
