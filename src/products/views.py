@@ -39,11 +39,7 @@ class ProductsFromCSView(APIView):
 
         a = uploadData.delay(temp_file_path)
 
-        curl_command = \
-         "curl -XPOST --no-buffer http://127.0.0.1:8000/status/ --data-raw '{{\"task_id\": \"{0}\" }}'"\
-         .format(str(a.id))
-        
-        return Response(data=curl_command, status=status.HTTP_202_ACCEPTED)
+        return Response(data=str(a.id), status=status.HTTP_202_ACCEPTED)
 
 
 class ListCreateProducts(ListCreateAPIView):
