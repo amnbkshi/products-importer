@@ -27,3 +27,8 @@ def uploadData(file_path):
     
     os.remove(file_path)
     return {'current': 100, 'total': 100, }
+
+
+@shared_task
+def callWebhooks(payload):
+    print(payload)
