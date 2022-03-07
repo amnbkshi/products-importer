@@ -1,9 +1,6 @@
-import imp
 import os
-import json
 from django.conf import settings
 from django.core.files.base import ContentFile
-from django.db import transaction
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
