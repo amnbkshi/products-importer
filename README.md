@@ -38,5 +38,33 @@ cd src
 celery -A core worker -l info
 ```
 ## Functionality
+### Upload feature
+- The `upload_csv/` endpoint accepts a `POST` request with the csv file as form body.
+- The CSV file is temporarily stored into the disk after which an async celery task if triggered to update the database.
+- The celery task updates the db in batches using `bulk_create` as it reduces the db connections
+```
+Product.objects.bulk_create(batch, batch_size, ignore_conflicts=True)
+# Here ignore_conflict=True is used to ignore the duplicate entries
+```
+- The api returns celery `task_id` which is used to track the progress of upload.
 
+### Progress tracking
+- Using the `task_id` from above api, execute the following command in terminal
+```
+curl -XPOST --no-buffer http://127.0.0.1:8000/status/ --data-raw '{"task_id": "Enter the task_id value here"}'
+```
+> Postman was not behaving correctly with SSEs hence using cURL here.
+- The above command initiates connection with the backend SSE consumer which sends progress updates until the upload is finished.
+- To calculate progress, the celery upload task keeps on saving the current batch_size in its message backend (i.e. `redis`) which the consumer reads and sends to client.
+
+### CRUD 
+- All CRUD functionalities are exposed on the `products/` endpoint via Django Rest Framework.
+> - Have used DRF here as the APIs only required basic CRUD operations.
+> - The APIs require BasicAuthentication with the username and password of the superuser created above.
+- `delete_all/` is also available to remove all entries from the Products table.
+> This is carried out under the `@transaction.atomic` decorator to maintain reliability in the database operations.
+### Webhooks
+- Webhooks can be configured using the `webhooks/` endpoint.
+- Django `post_save` signal is used to trigger a celery task which calls webhooks whenever an object is created or updated.
+- Doing this with an async task to improve application performance.
 ## Improvements
