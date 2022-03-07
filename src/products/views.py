@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from django_filters.rest_framework import DjangoFilterBackend
 
 from .tasks import uploadData
 from .serializers import ProductSerializer
@@ -48,6 +49,8 @@ class ProductsFromCSView(APIView):
 class ListCreateProducts(ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['name', 'sku', 'status']
 
 
 class RetrieveUpdateDestroyProducts(RetrieveUpdateDestroyAPIView):
