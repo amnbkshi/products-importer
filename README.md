@@ -44,8 +44,8 @@ celery -A core worker -l info
 - The celery task updates the db in batches using `bulk_create` as it reduces the db connections
 ```
 Product.objects.bulk_create(batch, batch_size, ignore_conflicts=True)
-# Here ignore_conflict=True is used to ignore the duplicate entries
 ```
+> Here `ignore_conflict=True` is used to ignore the duplicate entries
 - The api returns celery `task_id` which is used to track the progress of upload.
 
 ### Progress tracking
@@ -59,7 +59,7 @@ curl -XPOST --no-buffer http://127.0.0.1:8000/status/ --data-raw '{"task_id": "E
 
 ### CRUD 
 - All CRUD functionalities are exposed on the `products/` endpoint via Django Rest Framework.
-> - Have used DRF here as the APIs only required basic CRUD operations.
+> - Have used DRF here as the APIs only required basic CRUD operations and DRF offers those out of the box.
 > - The APIs require BasicAuthentication with the username and password of the superuser created above.
 - `delete_all/` is also available to remove all entries from the Products table.
 > This is carried out under the `@transaction.atomic` decorator to maintain reliability in the database operations.
@@ -68,3 +68,7 @@ curl -XPOST --no-buffer http://127.0.0.1:8000/status/ --data-raw '{"task_id": "E
 - Django `post_save` signal is used to trigger a celery task which calls webhooks whenever an object is created or updated.
 - Doing this with an async task to improve application performance.
 ## Improvements
+- To upload the csv I am storing it on disk which makes the overall task a bit slower. The file can be stored on an in-memory store with larger memory to improve speed and scalability of the application.
+- The implementation of SSE with django channels is a bit hackish. Also, lack of proper frontend client makes it even more trickier to use websockets. Library implementations (`django-eventstream`) can be used to make the implementation a bit more cleaner.
+- I have not indexed the columns on SKU/name, but if the filtering feature is frequently used, indexes can be added to improve read time of the application.
+- Note to be made, this will increase the write time of our operations and may become a bottleneck when size starts to grow. Sharding / separate indexing cluster (elasticsearch) can be explored to tackle these.
