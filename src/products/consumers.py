@@ -37,7 +37,7 @@ class ServerSentEventsConsumer(AsyncHttpConsumer):
                 'state': task.state, 
                 'progression': progression
                 }
-            
+            task.forget()
             await asyncio.sleep(1)
             await self.send_body((json.dumps(resp) + '\n').encode('utf-8'), more_body=True)            
 
