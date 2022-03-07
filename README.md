@@ -2,7 +2,6 @@
 
 Django project which allows to upload products data into database from a csv file. These products can further be interacted with various REST APIs.
 
-
 ## Installation
 ### Prerequisites:
 - `Postgres 12.0+`
@@ -12,16 +11,16 @@ Django project which allows to upload products data into database from a csv fil
 ### Project Setup:
 - Clone the project
 ```
-git clone https://github.com/aasaanjobs/api.git
+git clone https://github.com/amnbkshi/products-importer.git
 ```
 - Create virtual environment and activate
 ```
 virtualenv -p python3.8 api/venv
-source api/venv/bin/activate
+source ./venv/bin/activate
 ```
 - Install dependencies
 ```
-pip install -r api/requirements/base.txt
+pip install -r requirements.txt
 ```
 - Rename the `.sample-env` file to `.env` and add the respective entries
 - Setup django project
