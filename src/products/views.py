@@ -10,8 +10,8 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from django_filters.rest_framework import DjangoFilterBackend
 
 from .tasks import uploadData
-from .serializers import ProductSerializer
-from .models import Product
+from .serializers import ProductSerializer, WebhooksSerializer
+from .models import Product, Webhooks
 
 
 
@@ -61,8 +61,10 @@ class RetrieveUpdateDestroyProducts(RetrieveUpdateDestroyAPIView):
 class DeleteAllProducts(APIView):
 
     def delete(self, request):
-
         Product.objects.all().delete()
-
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+
+class ListCreateWebhooks(ListCreateAPIView):
+    queryset = Webhooks.objects.all()
+    serializer_class = WebhooksSerializer
