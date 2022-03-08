@@ -26,6 +26,7 @@ pip install -r requirements.txt
 - Setup django project
 ```
 cd src
+export DJANGO_SETTINGS_MODULE=core.settings
 ./manage.py migrate
 # Generate user which will be used for login
 ./manage.py createsuperuser
