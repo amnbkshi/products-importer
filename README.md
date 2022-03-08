@@ -72,3 +72,4 @@ curl -XPOST --no-buffer http://127.0.0.1:8000/status/ --data-raw '{"task_id": "E
 - The implementation of SSE with django channels is a bit hackish. Also, lack of proper frontend client makes it even more trickier to use websockets. Library implementations (`django-eventstream`) can be used to make the implementation a bit more cleaner.
 - I have not indexed the columns on SKU/name, but if the filtering feature is frequently used, indexes can be added to improve read time of the application.
 - Note to be made, this will increase the write time of our operations and may become a bottleneck when size starts to grow. Sharding / separate indexing cluster (elasticsearch) can be explored to tackle these.
+- Have not added test cases to the project. Both unit and integration tests can be added ti improve the overall quality of codebase.
